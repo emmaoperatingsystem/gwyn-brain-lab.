@@ -32,6 +32,8 @@ function routines(host){
  addField(morning,'morning_context','Anything that helped or made things difficult? (optional)','textarea');
  [['dress','Getting dressed and ready'],['teeth','Brushing teeth'],['deodorant','Using deodorant']].forEach(([k,l])=>choice(morning,'morning_'+k,parent()?('Did Gwyn manage '+l.toLowerCase()+'?'):('How did you manage '+l.toLowerCase()+'?'),support));
  const school=category(host,'🏫 School','Only complete questions about things you know.');
+ const arbor=choice(school,'school_arbor','Was there any feedback on Arbor today?',['None','Yes — positive','Yes — negative','Yes — both positive and negative','Not checked / not sure']);
+ conditional(arbor,v=>v.startsWith('Yes'),area=>addField(area,'school_arbor_details','What was the feedback? (optional)','textarea'));
  const attended=choice(school,'school_day','Was today a school day?',['Yes','No','Not sure']);
  conditional(attended,v=>v==='Yes',area=>{
  choice(area,'school_between',parent()?'How did Gwyn manage transitions between lessons (if known)?':'How were the changes between lessons?',ease);

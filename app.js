@@ -20,12 +20,16 @@ const time=['Under 5 minutes','5–15 minutes','15–30 minutes','Over 30 minute
 function conditional(select,when,build){const area=document.createElement('div');area.className='hidden';select.parentElement.append(area);build(area);function sync(){area.classList.toggle('hidden',!when(select.value));area.querySelectorAll('input,textarea,select').forEach(el=>el.disabled=!when(select.value))}select.addEventListener('change',sync);sync();}
 function routines(host){
  const morning=category(host,'🌅 Morning routine','Answer only what you experienced or observed.');
- const gettingUp=choice(morning,'morning_getup',parent()?'What happened when Gwyn needed to get out of bed?':'What happened when you needed to get out of bed?',['Got up independently','Got up after one friendly reminder','Got up after several reminders','Got up after firmer reminders','Escalated into an argument before getting up','Did not get up when needed','Not observed','Not sure']);
- choice(morning,'morning_prompts',parent()?'Approximately how many times did you ask or remind Gwyn?':'Approximately how many reminders did you hear?',['None','Once','2–3 times','4–5 times','More than 5','Not observed','Not sure']);
- choice(morning,'morning_escalation',parent()?'How did the interaction develop?':'How did it feel as the reminders continued?',['Stayed calm','Repeated reminders, but stayed calm','Frustration or tension increased','Voices became firmer or louder','Shouting or argument','Not observed','Not sure']);
+ morning.append(scale('morning_experience',parent()?'How did getting Gwyn up go this morning?':'How did getting up go this morning?'));
+ const argued=choice(morning,'morning_argument','Did this lead to an argument?',['No','Yes','Not sure','Not observed']);
+ conditional(argued,v=>v==='Yes',area=>{
+ choice(area,'morning_argument_resolved','How quickly was the argument resolved?',['Within 5 minutes','Within 15 minutes','Within 30 minutes','Longer than 30 minutes','Not fully resolved','Not sure']);
+ area.append(scale('morning_gwyn_response',parent()?'How did Gwyn manage the disagreement?':'How did you feel you managed the disagreement?'));
+ area.append(scale('morning_adult_response',parent()?'How did you manage the disagreement?':'How did the adult respond during the disagreement?'));
+ choice(area,'morning_emotional_recovery','How long until things felt settled again?',['Straight away','Within 15 minutes','Within 30 minutes','Longer than 30 minutes','Still unsettled','Not sure']);
+ });
  choice(morning,'morning_outcome','What was the outcome?',['Ready on time','Ready but late','Partly ready','Did not get ready','Not applicable','Not observed','Not sure']);
- choice(morning,'morning_recovery','How long until things felt settled again?',['No upset to recover from','Under 5 minutes','5–15 minutes','15–30 minutes','Over 30 minutes','Still unsettled','Not observed','Not sure']);
- addField(morning,'morning_context','What happened, or what helped? (optional)','textarea');
+ addField(morning,'morning_context','Anything that helped or made things difficult? (optional)','textarea');
  [['dress','Getting dressed and ready'],['teeth','Brushing teeth'],['deodorant','Using deodorant']].forEach(([k,l])=>choice(morning,'morning_'+k,parent()?('Did Gwyn manage '+l.toLowerCase()+'?'):('How did you manage '+l.toLowerCase()+'?'),support));
  const school=category(host,'🏫 School','Only complete questions about things you know.');
  const attended=choice(school,'school_day','Was today a school day?',['Yes','No','Not sure']);
